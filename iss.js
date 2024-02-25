@@ -14,12 +14,12 @@ const fetchMyIP = (callback) => {
 
     const ip = JSON.parse(body).ip;
 
-    callback(null, ip);
+    callback(null, ip); //this ip is used by next func
   });
   // use request to fetch IP address from JSON API
 };
 
-const fetchCoordsByIP = (ip, callback) => {
+const fetchCoordsByIP = (ip, callback) => { //ip is from previous func
   const url = `http://ipwho.is/${ip}`;
 
   request(url, (error, response, body) => {
@@ -34,11 +34,11 @@ const fetchCoordsByIP = (ip, callback) => {
 
     const { latitude, longitude } = data;
 
-    callback(null, { latitude, longitude });
+    callback(null, { latitude, longitude }); //these values are passed to next func
   });
 };
 
-const fetchISSFlyOverTimes = (coords, callback) => {
+const fetchISSFlyOverTimes = (coords, callback) => { //coords from previous func
   const url = `https://iss-flyover.herokuapp.com/json/?lat=${coords.latitude}&lon=${coords.longitude}`;
 
   request(url, (error, response, body) => {
@@ -55,7 +55,7 @@ const fetchISSFlyOverTimes = (coords, callback) => {
   });
 };
 
-const nextISSTimesForMyLocation = (callback) => {
+const nextISSTimesForMyLocation = (callback) => { //chains the funcs using callback hell
   fetchMyIP((error, ip) => {
     if (error) {
       return callback(error, null);
@@ -71,7 +71,7 @@ const nextISSTimesForMyLocation = (callback) => {
           return callback(error, null);
         }
             
-        callback(null, passTimes);
+        callback(null, passTimes); //final value is passed to printPassTimes in index.js
       });
     });
   });
